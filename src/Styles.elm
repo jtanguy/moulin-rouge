@@ -17,7 +17,6 @@ mrNamespace =
 type SlideClasses
     = Slide
     | Centered
-    | Black
 
 
 css =
@@ -39,9 +38,5 @@ css =
         , mediaQuery "screen and ( orientation: portrait )"
             [ Css.class Slide
                 [ height (vmin 56) ]
-            ]
-        , Css.class Black
-            [ backgroundColor (hex "111")
-            , color (hex "eee")
             ]
         ]

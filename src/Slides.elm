@@ -87,7 +87,11 @@ slide =
 
 endSlide : Slide msg
 endSlide =
-    slide [ text "Fin." ] [ class [ Black ] ]
+    slide
+        [ ( "background-color", "#111" )
+        , ( "color", "#eee" )
+        ]
+        [ text "Fin." ]
 
 
 cssStyles =
