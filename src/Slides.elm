@@ -1,4 +1,15 @@
-module Slides exposing (..)
+module Slides
+    exposing
+        ( State
+        , Jump(..)
+        , beginning
+        , Config
+        , Slideshow
+        , config
+        , Slide
+        , slide
+        , view
+        )
 
 import Html exposing (..)
 import Html.Attributes exposing (style, type_)

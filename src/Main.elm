@@ -71,7 +71,6 @@ update msg model =
             , slide [ h1 [] [ text (toString 2) ] ] []
             , slide [ h1 [] [ text (toString 3) ] ] []
             , slide [ h1 [] [ text (toString 4) ] ] []
-            , Slides.endSlide
             ]
         }
 
