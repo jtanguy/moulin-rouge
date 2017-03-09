@@ -77,10 +77,10 @@ config { slides } =
 
 
 type Slide msg
-    = MkSlide (List (Html msg)) (List (Attribute msg))
+    = MkSlide (List ( String, String )) (List (Html msg))
 
 
-slide : List (Html msg) -> List (Attribute msg) -> Slide msg
+slide : List ( String, String ) -> List (Html msg) -> Slide msg
 slide =
     MkSlide
 
@@ -113,7 +113,7 @@ view (Config { slides }) (State num) =
 
 
 viewSlide : Slide msg -> Html msg
-viewSlide (MkSlide elems attrs) =
+viewSlide (MkSlide styles elems) =
     div
         ([ class
             (if List.length elems > 1 then
@@ -121,11 +121,7 @@ viewSlide (MkSlide elems attrs) =
              else
                 [ Slide, Centered ]
             )
-         , style
-            [ ( "background-color", "#111" )
-            , ( "color", "#eee" )
-            ]
+         , style styles
          ]
-            ++ attrs
         )
         elems
