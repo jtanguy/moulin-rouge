@@ -1,9 +1,10 @@
 module Slides exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, type_)
 import Styles exposing (..)
 import Array exposing (Array, fromList)
+import Css
 
 
 type State
@@ -78,14 +79,22 @@ endSlide =
     slide [ text "Fin." ] [ class [ Black ] ]
 
 
+cssStyles =
+    let
+        { css, warnings } =
+            Css.compile [ Styles.css ]
+    in
+        Html.node "style" [ type_ "text/css" ] [ text css ]
+
+
 view : Config msg -> State -> Html msg
 view (Config { slides }) (State num) =
     case Array.get num slides of
         Just s ->
-            viewSlide s
+            div [] [ cssStyles, viewSlide s ]
 
         Nothing ->
-            viewSlide endSlide
+            div [] [ cssStyles, viewSlide endSlide ]
 
 
 viewSlide : Slide msg -> Html msg
