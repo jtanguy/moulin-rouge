@@ -1,7 +1,7 @@
 module Slides
     exposing
         ( State
-        , Jump(..)
+        , Msg(..)
         , beginning
         , Config
         , Slideshow
@@ -22,7 +22,7 @@ type State
     = State Int
 
 
-type Jump
+type Msg
     = Next
     | Prev
     | Begin
@@ -54,7 +54,7 @@ config { slides } =
         nbSlides =
             List.length slides
 
-        jumpTo dir (State n) =
+        update dir (State n) =
             case dir of
                 Begin ->
                     State 0
@@ -72,7 +72,7 @@ config { slides } =
             Config
                 { slides = fromList slides
                 }
-        , jumpTo = jumpTo
+        , update = update
         }
 
 
