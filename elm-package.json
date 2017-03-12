@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "summary": "Slideshow library",
     "repository": "https://github.com/jtanguy/moulin-rouge.git",
     "license": "BSD3",
@@ -10,12 +10,12 @@
         "Slides"
     ],
     "dependencies": {
+        "SwiftsNamesake/proper-keyboard": "3.0.0 <= v < 4.0.0",
         "elm-lang/core": "5.1.1 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
+        "elm-lang/keyboard": "1.0.1 <= v < 2.0.0",
         "rtfeldman/elm-css": "8.1.0 <= v < 9.0.0",
-        "rtfeldman/elm-css-helpers": "2.0.1 <= v < 3.0.0",
-        "SwiftsNamesake/proper-keyboard": "3.0.0 <= v < 4.0.0",
-        "elm-lang/keyboard": "1.0.1 <= v < 2.0.0"
+        "rtfeldman/elm-css-helpers": "2.0.1 <= v < 3.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"
 }
