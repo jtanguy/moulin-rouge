@@ -5,19 +5,26 @@ module Slides
         , beginning
         , Config
         , Slideshow
-        , config
+        , slideshow
         , Slide
         , slide
         , view
+        , basicProgram
+        , Presenter
+        , keyboard
         )
 
 {-| This library helps you create slideshows
 
 # Creation
-@docs slide, config
+@docs slide, slideshow
 
 # View
 @docs view, beginning
+
+# Run
+@docs basicProgram, Presenter, keyboard
+
 
 # Update
 @docs Msg
@@ -31,6 +38,8 @@ import Html exposing (..)
 import Html.Attributes exposing (style, type_)
 import Styles exposing (..)
 import Array exposing (Array, fromList)
+import Keyboard.Key exposing (Key, fromCode)
+import Keyboard
 import Css
 
 
@@ -53,7 +62,7 @@ type Msg
 -}
 type alias Slideshow msg =
     { config : Config msg
-    , update : Msg -> State -> State
+    , update : msg -> State -> State
     }
 
 
@@ -79,7 +88,7 @@ type Config msg
 slideshow state.
 
     { config, update } =
-        Slides.config
+        Slides.slideshow
             { slides =
                 [ slide [ h1 [] [ text "Hello World !" ] ] []
                 , slide [ h1 [] [ text "The End." ] ] []
@@ -88,28 +97,32 @@ slideshow state.
 
 You can then use the `config` and `update` functions in your application
 -}
-config :
+slideshow :
     { slides : List (Slide msg)
+    , toMsg : msg -> Maybe Msg
     }
     -> Slideshow msg
-config { slides } =
+slideshow { slides, toMsg } =
     let
         nbSlides =
             List.length slides
 
-        update dir (State n) =
-            case dir of
-                Begin ->
+        update message (State n) =
+            case toMsg message of
+                Just Begin ->
                     State 0
 
-                End ->
+                Just End ->
                     State nbSlides
 
-                Next ->
-                    State (min (n + 1) nbSlides)
+                Just Next ->
+                    State (min (n + 1) (nbSlides - 1))
 
-                Prev ->
+                Just Prev ->
                     State (max (n - 1) 0)
+
+                Nothing ->
+                    (State n)
     in
         { config =
             Config
@@ -193,3 +206,65 @@ viewSlide (MkSlide styles elems) =
          ]
         )
         elems
+
+
+{-| Create a simple Program from a slideshow.
+-}
+basicProgram : List (Slide (Maybe Msg)) -> Program Never State (Maybe Msg)
+basicProgram slides =
+    let
+        { config, update } =
+            slideshow { slides = slides, toMsg = identity }
+
+        myupdate msg state =
+            update msg state ! []
+    in
+        program
+            { init = beginning ! []
+            , subscriptions = \_ -> keyboard.events
+            , view = view (config)
+            , update = myupdate
+            }
+
+
+{-| Represent a presenting tool, such as a keyboard or a wireless remote.
+You can implement your own presenters and use them for your slideshow.
+-}
+type alias Presenter =
+    { events : Sub (Maybe Msg)
+    }
+
+
+{-| A basic keyboard presenter
+The Left/Right arrow keys and PageDown/PageUp keys move Forwards and Backwards
+respectively, and the Begin/End keys go to the beginning/end of the slideshow.
+-}
+keyboard : Presenter
+keyboard =
+    { events =
+        let
+            decider code =
+                case fromCode code of
+                    Keyboard.Key.Right ->
+                        Just Next
+
+                    Keyboard.Key.Left ->
+                        Just Prev
+
+                    Keyboard.Key.PageDown ->
+                        Just Next
+
+                    Keyboard.Key.PageUp ->
+                        Just Prev
+
+                    Keyboard.Key.Home ->
+                        Just Begin
+
+                    Keyboard.Key.End ->
+                        Just End
+
+                    _ ->
+                        Nothing
+        in
+            Keyboard.downs decider
+    }
